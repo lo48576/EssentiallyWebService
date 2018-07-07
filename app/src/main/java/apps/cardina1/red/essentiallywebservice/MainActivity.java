@@ -50,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
                 if (resCode == RESULT_OK) {
                     String uri = data.getDataString();
                     Log.d(ACTIVITY_TAG, "onActivityResult: REQ_OPEN_DB_FILE: uri = " + uri);
-                    // TODO: Copy the resource (maybe at `content://` URI) into
-                    // temporary directory, and open it as SQLite database.
+                    Intent intent = new Intent(this, DbViewActivity.class);
+                    intent.putExtra(DbViewActivity.DB_URI_EXTRA, uri);
+                    startActivity(intent);
                 }
                 break;
         }
