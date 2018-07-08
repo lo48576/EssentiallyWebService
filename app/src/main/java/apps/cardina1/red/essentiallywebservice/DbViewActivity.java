@@ -246,6 +246,24 @@ public class DbViewActivity extends AppCompatActivity
             // FIXME: Set appropriate parameters: groudId, itemId, and order.
             MenuItem item = tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
             item.setIcon(R.drawable.baseline_view_module_24);
+            item.setOnMenuItemClickListener(new TableMenuItemClickListener(name));
         }
+    }
+}
+
+class TableMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
+    private String tableName;
+
+    public TableMenuItemClickListener(String tableName) {
+        this.tableName = tableName;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Log.d("TableMenuItemClickListener", "onMenuItemClick: table item selected: " + tableName);
+        // FIXME: unimplemented.
+        Log.d("TableMenuItemClickListener", "FIXME: unimplemented");
+        // Drawer should close after the item is selected, so return `false` here.
+        return false;
     }
 }
