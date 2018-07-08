@@ -22,6 +22,10 @@
             android:title="Tools" />
     </group>
 
+    <item android:title="Tables" android:id="@+id/nav_tables">
+        <menu />
+    </item>
+
     <item android:title="Communicate">
         <menu>
             <item

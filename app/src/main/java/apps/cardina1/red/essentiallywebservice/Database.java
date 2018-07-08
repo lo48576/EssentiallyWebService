@@ -2,8 +2,11 @@ package apps.cardina1.red.essentiallywebservice;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.database.Cursor;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class Database {
@@ -35,5 +38,20 @@ public class Database {
 
     public void close() {
         db.close();
+    }
+
+    // See <https://stackoverflow.com/a/15384267>.
+    public List<String> getTableNames() {
+        List<String> tables = new ArrayList<>();
+        try (Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null)) {
+            if (c.moveToFirst()) {
+                while (!c.isAfterLast()) {
+                    tables.add(c.getString(c.getColumnIndex("name")));
+                    c.moveToNext();
+                }
+            }
+        }
+
+        return tables;
     }
 }

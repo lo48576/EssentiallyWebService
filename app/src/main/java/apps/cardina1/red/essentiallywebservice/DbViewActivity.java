@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Optional;
 
 public class DbViewActivity extends AppCompatActivity
@@ -103,6 +105,9 @@ public class DbViewActivity extends AppCompatActivity
             finish();
             return;
         }
+
+        // Set up DB-related UI components.
+        updateTablesMenu();
     }
 
     @Override
@@ -226,5 +231,20 @@ public class DbViewActivity extends AppCompatActivity
             cursor.close();
         }
         return displayName;
+    }
+
+    private void updateTablesMenu() {
+        Log.d(ACTIVITY_TAG, "updateTablesMenu");
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem tablesItem = menu.findItem(R.id.nav_tables);
+        Menu tablesMenu = tablesItem.getSubMenu();
+
+        tablesMenu.clear();
+        for (String name: db.getTableNames()) {
+            Log.d(ACTIVITY_TAG, "updateTablesMenu: adding table items to the drawer: " + name);
+            // FIXME: Set appropriate parameters: groudId, itemId, and order.
+            tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
+        }
     }
 }
