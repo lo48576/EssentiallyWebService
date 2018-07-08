@@ -35,7 +35,7 @@ public class DbViewActivity extends AppCompatActivity
     public final static String DB_URI_EXTRA = "db_uri";
 
     private File file;
-    private SQLiteDatabase db;
+    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +93,7 @@ public class DbViewActivity extends AppCompatActivity
         file = fileResult.get();
 
         try {
-            db = SQLiteDatabase.openDatabase(file.getPath(), null,
-                    SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = new Database(file.getPath());
         } catch (SQLiteException e) {
             e.printStackTrace();
             Toast.makeText(
@@ -103,14 +102,6 @@ public class DbViewActivity extends AppCompatActivity
                     Toast.LENGTH_LONG).show();
             finish();
             return;
-        }
-        if (db.isDatabaseIntegrityOk()) {
-            Log.d(ACTIVITY_TAG,
-                    "onCreate: Database integrity is OK. Enabling foreign key constraint");
-            db.setForeignKeyConstraintsEnabled(true);
-        } else {
-            Log.w(ACTIVITY_TAG,
-                    "onCreate: Database integrity is not OK");
         }
     }
 
