@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,7 @@ public class DbViewActivity extends AppCompatActivity
 
     private File file;
     private Database db;
+    private List<MenuItem> tableItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,9 +157,15 @@ public class DbViewActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        if (id == R.id.nav_create) {
+        if (tableItems.contains(item)) {
+            String tableName = item.getTitle().toString();
+            Log.d(ACTIVITY_TAG, "onNavigationItemSelected: table item selected: " + tableName);
+            // FIXME: unimplemented.
+            Log.d(ACTIVITY_TAG, "onNavigationItemSelected: FIXME: unimplemented");
+        } else if (id == R.id.nav_create) {
 
         } else if (id == R.id.nav_drop) {
 
@@ -237,29 +245,13 @@ public class DbViewActivity extends AppCompatActivity
         Menu tablesMenu = tablesItem.getSubMenu();
 
         tablesMenu.clear();
+        tableItems.clear();
         for (String name: db.getTableNames()) {
             Log.d(ACTIVITY_TAG, "updateTablesMenu: adding table items to the drawer: " + name);
             // FIXME: Set appropriate parameters: groudId, itemId, and order.
             MenuItem item = tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
             item.setIcon(R.drawable.baseline_view_module_24);
-            item.setOnMenuItemClickListener(new TableMenuItemClickListener(name));
+            tableItems.add(item);
         }
-    }
-}
-
-class TableMenuItemClickListener implements MenuItem.OnMenuItemClickListener {
-    private String tableName;
-
-    public TableMenuItemClickListener(String tableName) {
-        this.tableName = tableName;
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        Log.d("TableMenuItemClickListener", "onMenuItemClick: table item selected: " + tableName);
-        // FIXME: unimplemented.
-        Log.d("TableMenuItemClickListener", "FIXME: unimplemented");
-        // Drawer should close after the item is selected, so return `false` here.
-        return false;
     }
 }
