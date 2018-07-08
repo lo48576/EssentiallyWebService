@@ -18,8 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Optional;
 
 public class DbViewActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
@@ -59,9 +64,10 @@ public class DbViewActivity extends AppCompatActivity
         uriText.setText(uri.toString());
         Cursor cursor = getContentResolver()
                 .query(uri, new String[]{ OpenableColumns.DISPLAY_NAME }, null, null, null, null);
+        String displayName = "";
         try {
             if (cursor != null && cursor.moveToFirst()) {
-                String displayName = cursor.getString(
+                displayName = cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 Log.d(ACTIVITY_TAG, "onCreate: display name = " + displayName);
                 TextView displayNameText = headerView.findViewById(R.id.db_file_name);
@@ -71,7 +77,8 @@ public class DbViewActivity extends AppCompatActivity
             cursor.close();
         }
 
-        loadToAppLocalFile(uri);
+        Optional<File> file = loadToAppLocalFile(uri, displayName);
+        Log.d(ACTIVITY_TAG, "onCreate: created app-local file: " + file);
     }
 
     @Override
@@ -131,15 +138,39 @@ public class DbViewActivity extends AppCompatActivity
         return true;
     }
 
-    // FIXME: Return `File`, not `void`.
-    private void loadToAppLocalFile(Uri uri) {
-        Log.d(ACTIVITY_TAG, "loadToAppLocalFile");
-        try {
-            InputStream stream = getContentResolver().openInputStream(uri);
+    private Optional<File> loadToAppLocalFile(Uri uri, String name) {
+        Log.d(ACTIVITY_TAG, "loadToAppLocalFile: uri = " + uri.toString() + ", name = " + name);
+        File localFile = null;
+        try (InputStream contentStream = getContentResolver().openInputStream(uri)) {
+            localFile = createAppLocalFile(name);
+            // About stream-to-file copy, see <http://www.baeldung.com/convert-input-stream-to-a-file>.
+            // NOTE: `java.nio.file.{Files, Paths}` are available for API level 26 or above.
+            try (OutputStream outStream = new FileOutputStream(localFile)) {
+                byte[] buffer = new byte[8 * 1024];
+                int bytesRead;
+                while ((bytesRead = contentStream.read(buffer)) != -1) {
+                    outStream.write(buffer, 0, bytesRead);
+                }
+            } catch (IOException e) {
+                Log.e(ACTIVITY_TAG,
+                        "loadToAppLocalFile: failed to copy stream into file: " + uri + ", " + localFile);
+                e.printStackTrace();
+            }
         } catch (FileNotFoundException e) {
             Log.e(ACTIVITY_TAG, "loadToAppLocalFile: cannot open input stream: " + uri);
             e.printStackTrace();
+        } catch (IOException e) {
+            Log.e(ACTIVITY_TAG,
+                    "loadToAppLocalFile: failed to close content stream: " + uri);
+            e.printStackTrace();
         }
-        // TODO: Save the streamed content into an app local file.
+        return Optional.ofNullable(localFile);
+    }
+
+    private File createAppLocalFile(String name) {
+        Log.d(ACTIVITY_TAG, "createAppLocalFile");
+        File file = new File(getFilesDir(), name);
+        Log.d(ACTIVITY_TAG, "createAppLocalFile: file = " + file);
+        return file;
     }
 }
