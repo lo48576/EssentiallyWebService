@@ -244,7 +244,8 @@ public class DbViewActivity extends AppCompatActivity
         for (String name: db.getTableNames()) {
             Log.d(ACTIVITY_TAG, "updateTablesMenu: adding table items to the drawer: " + name);
             // FIXME: Set appropriate parameters: groudId, itemId, and order.
-            tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
+            MenuItem item = tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
+            item.setIcon(R.drawable.baseline_view_module_24);
         }
     }
 }
