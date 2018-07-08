@@ -62,7 +62,7 @@ public class DbViewActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        Uri uri = Uri.parse(getIntent().getStringExtra(DB_URI_EXTRA));
+        Uri uri = getDbUri();
 
         // Query the display name of the resource.
         View headerView = navigationView.getHeaderView(0);
@@ -70,18 +70,15 @@ public class DbViewActivity extends AppCompatActivity
         uriText.setText(uri.toString());
         Cursor cursor = getContentResolver()
                 .query(uri, new String[]{ OpenableColumns.DISPLAY_NAME }, null, null, null, null);
-        String displayName = "";
-        try {
-            if (cursor != null && cursor.moveToFirst()) {
-                displayName = cursor.getString(
-                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                Log.d(ACTIVITY_TAG, "onCreate: display name = " + displayName);
-                TextView displayNameText = headerView.findViewById(R.id.db_file_name);
-                displayNameText.setText(displayName);
-            }
-        } finally {
-            cursor.close();
+        Optional<String> displayNameResult = getDisplayName();
+        Log.d(ACTIVITY_TAG, "onCreate: display name = " + displayNameResult);
+        if (!displayNameResult.isPresent()) {
+            finish();
+            return;
         }
+        String displayName = displayNameResult.get();
+        TextView displayNameText = headerView.findViewById(R.id.db_file_name);
+        displayNameText.setText(displayName);
 
         Optional<File> fileResult = loadToAppLocalFile(uri, displayName);
         Log.d(ACTIVITY_TAG, "onCreate: created app-local file: " + fileResult);
@@ -217,5 +214,24 @@ public class DbViewActivity extends AppCompatActivity
         File file = new File(getFilesDir(), name);
         Log.d(ACTIVITY_TAG, "createAppLocalFile: file = " + file);
         return file;
+    }
+
+    private Uri getDbUri() {
+        return Uri.parse(getIntent().getStringExtra(DB_URI_EXTRA));
+    }
+
+    private Optional<String> getDisplayName() {
+        Cursor cursor = getContentResolver()
+                .query(getDbUri(), new String[]{ OpenableColumns.DISPLAY_NAME }, null, null, null, null);
+        Optional<String> displayName = Optional.empty();
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                displayName = Optional.of(cursor.getString(
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
+            }
+        } finally {
+            cursor.close();
+        }
+        return displayName;
     }
 }
