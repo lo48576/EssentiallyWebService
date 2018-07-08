@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class DbViewActivity extends AppCompatActivity
@@ -35,7 +38,8 @@ public class DbViewActivity extends AppCompatActivity
     public final static String DB_URI_EXTRA = "db_uri";
 
     private File file;
-    private SQLiteDatabase db;
+    private Database db;
+    private List<MenuItem> tableItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +97,7 @@ public class DbViewActivity extends AppCompatActivity
         file = fileResult.get();
 
         try {
-            db = SQLiteDatabase.openDatabase(file.getPath(), null,
-                    SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+            db = new Database(file.getPath());
         } catch (SQLiteException e) {
             e.printStackTrace();
             Toast.makeText(
@@ -104,14 +107,9 @@ public class DbViewActivity extends AppCompatActivity
             finish();
             return;
         }
-        if (db.isDatabaseIntegrityOk()) {
-            Log.d(ACTIVITY_TAG,
-                    "onCreate: Database integrity is OK. Enabling foreign key constraint");
-            db.setForeignKeyConstraintsEnabled(true);
-        } else {
-            Log.w(ACTIVITY_TAG,
-                    "onCreate: Database integrity is not OK");
-        }
+
+        // Set up DB-related UI components.
+        updateTablesMenu();
     }
 
     @Override
@@ -159,19 +157,29 @@ public class DbViewActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (tableItems.contains(item)) {
+            String tableName = item.getTitle().toString();
+            Log.d(ACTIVITY_TAG, "onNavigationItemSelected: table item selected: " + tableName);
+            // FIXME: unimplemented.
+            Log.d(ACTIVITY_TAG, "onNavigationItemSelected: FIXME: unimplemented");
+        } else if (id == R.id.nav_raw_query) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_select) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_insert) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_update) {
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_delete) {
+
+        } else if (id == R.id.nav_create) {
+
+        } else if (id == R.id.nav_drop) {
+
+        } else if (id == R.id.nav_alter) {
 
         }
 
@@ -235,5 +243,23 @@ public class DbViewActivity extends AppCompatActivity
             cursor.close();
         }
         return displayName;
+    }
+
+    private void updateTablesMenu() {
+        Log.d(ACTIVITY_TAG, "updateTablesMenu");
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu menu = navigationView.getMenu();
+        MenuItem tablesItem = menu.findItem(R.id.nav_tables);
+        Menu tablesMenu = tablesItem.getSubMenu();
+
+        tablesMenu.clear();
+        tableItems.clear();
+        for (String name: db.getTableNames()) {
+            Log.d(ACTIVITY_TAG, "updateTablesMenu: adding table items to the drawer: " + name);
+            // FIXME: Set appropriate parameters: groudId, itemId, and order.
+            MenuItem item = tablesMenu.add(Menu.NONE, Menu.NONE, Menu.NONE, name);
+            item.setIcon(R.drawable.baseline_view_module_24);
+            tableItems.add(item);
+        }
     }
 }

@@ -5,22 +5,52 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:id="@+id/nav_raw_query"
+            android:icon="@drawable/baseline_insert_comment_24"
+            android:title="Raw query" />
     </group>
+
+    <item android:title="Row-level query">
+        <menu>
+            <item
+                android:id="@+id/nav_select"
+                android:icon="@drawable/baseline_search_24"
+                android:title="Select" />
+            <item
+                android:id="@+id/nav_update"
+                android:icon="@drawable/baseline_edit_24"
+                android:title="Update" />
+            <item
+                android:id="@+id/nav_insert"
+                android:icon="@drawable/baseline_add_24"
+                android:title="Insert" />
+            <item
+                android:id="@+id/nav_delete"
+                android:icon="@drawable/baseline_delete_24"
+                android:title="Delete" />
+        </menu>
+    </item>
+
+    <item android:title="Table-level query">
+        <menu>
+            <item
+                android:id="@+id/nav_create"
+                android:icon="@drawable/baseline_add_24"
+                android:title="Create table" />
+            <item
+                android:id="@+id/nav_drop"
+                android:icon="@drawable/baseline_delete_24"
+                android:title="Drop table" />
+            <item
+                android:id="@+id/nav_alter"
+                android:icon="@drawable/baseline_edit_24"
+                android:title="Alter table" />
+        </menu>
+    </item>
+
+    <item android:title="Tables" android:id="@+id/nav_tables">
+        <menu />
+    </item>
 
     <item android:title="Communicate">
         <menu>
