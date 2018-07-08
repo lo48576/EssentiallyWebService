@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 
 import java.util.ArrayList;
 
@@ -57,7 +60,18 @@ public class SelectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_select, container, false);
+        View view = inflater.inflate(R.layout.fragment_select, container, false);
+
+        // Add UI components for `FROM` clause.
+        TableLayout tableFrom = (TableLayout) view.findViewById(R.id.table_from);
+        int row_i = 0;
+        for (String name: tableNames) {
+            inflater.inflate(R.layout.sql_table_from_row, tableFrom);
+            TableRow row = (TableRow) tableFrom.getChildAt(row_i);
+            ((CheckBox) row.getChildAt(0)).setText(name);
+            row_i++;
+        }
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
