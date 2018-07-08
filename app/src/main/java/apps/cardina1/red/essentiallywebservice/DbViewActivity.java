@@ -201,10 +201,12 @@ public class DbViewActivity extends AppCompatActivity
         } catch (FileNotFoundException e) {
             Log.e(ACTIVITY_TAG, "loadToAppLocalFile: cannot open input stream: " + uri);
             e.printStackTrace();
+            localFile = null;
         } catch (IOException e) {
             Log.e(ACTIVITY_TAG,
                     "loadToAppLocalFile: failed to close content stream: " + uri);
             e.printStackTrace();
+            localFile = null;
         }
         return Optional.ofNullable(localFile);
     }
