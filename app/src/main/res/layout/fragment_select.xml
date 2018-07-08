@@ -1,68 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SelectFragment">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/button_run"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="Run" />
 
-        <Button
-            android:id="@+id/button_run"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Run" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/text_fixed_select"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="SELECT" />
+            <TextView
+                android:id="@+id/text_fixed_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="SELECT" />
 
-        <EditText
-            android:id="@+id/edit_text_select"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="*"
-            android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/edit_text_select"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="*"
+                android:inputType="textPersonName" />
 
-        <TextView
-            android:id="@+id/text_fixed_from"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="FROM" />
+            <TextView
+                android:id="@+id/text_fixed_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="FROM" />
 
-        <TableLayout
-            android:id="@+id/table_from"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:stretchColumns="2">
+            <TableLayout
+                android:id="@+id/table_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:stretchColumns="2">
 
-        </TableLayout>
+            </TableLayout>
 
-        <TextView
-            android:id="@+id/text_fixed_where"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="WHERE" />
+            <TextView
+                android:id="@+id/text_fixed_where"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="WHERE" />
 
-        <EditText
-            android:id="@+id/edit_text_where"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textMultiLine" />
+            <EditText
+                android:id="@+id/edit_text_where"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textMultiLine" />
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
