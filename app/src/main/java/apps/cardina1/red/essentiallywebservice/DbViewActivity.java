@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -79,6 +80,13 @@ public class DbViewActivity extends AppCompatActivity
 
         Optional<File> file = loadToAppLocalFile(uri, displayName);
         Log.d(ACTIVITY_TAG, "onCreate: created app-local file: " + file);
+        if (!file.isPresent()) {
+            Toast.makeText(
+                    DbViewActivity.this,
+                    R.string.toast_failed_to_create_app_local_file_copy,
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 
     @Override
