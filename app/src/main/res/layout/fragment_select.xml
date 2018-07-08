@@ -69,6 +69,66 @@
                 android:ems="10"
                 android:inputType="textMultiLine" />
 
+            <TextView
+                android:id="@+id/text_fixed_group_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="GROUP BY" />
+
+            <EditText
+                android:id="@+id/edit_text_group_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textMultiLine" />
+
+            <TextView
+                android:id="@+id/text_fixed_having"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="HAVING" />
+
+            <EditText
+                android:id="@+id/edit_text_having"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/text_fixed_order_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ORDER BY" />
+
+            <EditText
+                android:id="@+id/edit_text_order_by"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
+            <TextView
+                android:id="@+id/text_fixed_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="LIMIT" />
+
+            <EditText
+                android:id="@+id/edit_text_limit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
