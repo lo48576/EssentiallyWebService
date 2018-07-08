@@ -8,10 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,6 +27,8 @@ import java.util.ArrayList;
 public class SelectFragment extends Fragment {
     private static final String FRAGMENT_TAG = "SelectFragment";
     private static final String ARG_TABLE_NAMES = "tableNames";
+    private static final String BUNDLE_FROM_CHECKS = "fromChecks";
+    private static final String BUNDLE_FROM_TEXTS = "fromTexts";
 
     private ArrayList<String> tableNames;
 
@@ -64,14 +69,41 @@ public class SelectFragment extends Fragment {
 
         // Add UI components for `FROM` clause.
         TableLayout tableFrom = (TableLayout) view.findViewById(R.id.table_from);
+        Map<String, Boolean> fromChecks = new HashMap<>();
+        Map<String, String> fromTexts = new HashMap<>();
+        if (savedInstanceState != null) {
+            fromChecks = (HashMap<String, Boolean>) savedInstanceState.getSerializable(BUNDLE_FROM_CHECKS);
+            fromTexts = (HashMap<String, String>) savedInstanceState.getSerializable(BUNDLE_FROM_TEXTS);
+        }
         int row_i = 0;
         for (String name: tableNames) {
             inflater.inflate(R.layout.sql_table_from_row, tableFrom);
             TableRow row = (TableRow) tableFrom.getChildAt(row_i);
-            ((CheckBox) row.getChildAt(0)).setText(name);
+            CheckBox check = (CheckBox) row.getChildAt(0);
+            check.setText(name);
+            check.setChecked(fromChecks.getOrDefault(name, false));
+            ((EditText) row.getChildAt(2)).setText(fromTexts.getOrDefault(name, ""));
             row_i++;
         }
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        TableLayout tableFrom = (TableLayout) getView().findViewById(R.id.table_from);
+        HashMap<String, Boolean> fromChecks = new HashMap<>();
+        HashMap<String, String> fromTexts = new HashMap<>();
+        int numChildren = tableFrom.getChildCount();
+        for (int row_i = 0; row_i < numChildren; row_i++) {
+            TableRow row = (TableRow) tableFrom.getChildAt(row_i);
+            String name = ((CheckBox) row.getChildAt(0)).getText().toString();
+            fromChecks.put(name, ((CheckBox) row.getChildAt(0)).isChecked());
+            fromTexts.put(name, ((EditText) row.getChildAt(2)).getText().toString());
+        }
+        savedInstanceState.putSerializable(BUNDLE_FROM_CHECKS, fromChecks);
+        savedInstanceState.putSerializable(BUNDLE_FROM_TEXTS, fromTexts);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
