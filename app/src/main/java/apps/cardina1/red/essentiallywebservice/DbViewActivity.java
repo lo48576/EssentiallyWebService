@@ -1,6 +1,8 @@
 package apps.cardina1.red.essentiallywebservice;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -31,6 +33,9 @@ public class DbViewActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
     private final static String ACTIVITY_TAG = "DbViewActivity";
     public final static String DB_URI_EXTRA = "db_uri";
+
+    private File file;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,15 +83,47 @@ public class DbViewActivity extends AppCompatActivity
             cursor.close();
         }
 
-        Optional<File> file = loadToAppLocalFile(uri, displayName);
-        Log.d(ACTIVITY_TAG, "onCreate: created app-local file: " + file);
-        if (!file.isPresent()) {
+        Optional<File> fileResult = loadToAppLocalFile(uri, displayName);
+        Log.d(ACTIVITY_TAG, "onCreate: created app-local file: " + fileResult);
+        if (!fileResult.isPresent()) {
             Toast.makeText(
                     DbViewActivity.this,
                     R.string.toast_failed_to_create_app_local_file_copy,
                     Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
+        file = fileResult.get();
+
+        try {
+            db = SQLiteDatabase.openDatabase(file.getPath(), null,
+                    SQLiteDatabase.OPEN_READWRITE | SQLiteDatabase.NO_LOCALIZED_COLLATORS);
+        } catch (SQLiteException e) {
+            e.printStackTrace();
+            Toast.makeText(
+                    DbViewActivity.this,
+                    R.string.toast_failed_to_open_db_file,
+                    Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+        if (db.isDatabaseIntegrityOk()) {
+            Log.d(ACTIVITY_TAG,
+                    "onCreate: Database integrity is OK. Enabling foreign key constraint");
+            db.setForeignKeyConstraintsEnabled(true);
+        } else {
+            Log.w(ACTIVITY_TAG,
+                    "onCreate: Database integrity is not OK");
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(ACTIVITY_TAG, "onDestroy");
+        if (db != null) {
+            db.close();
+        }
+        super.onDestroy();
     }
 
     @Override
