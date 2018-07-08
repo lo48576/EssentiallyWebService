@@ -41,8 +41,8 @@ public class Database {
     }
 
     // See <https://stackoverflow.com/a/15384267>.
-    public List<String> getTableNames() {
-        List<String> tables = new ArrayList<>();
+    public ArrayList<String> getTableNames() {
+        ArrayList<String> tables = new ArrayList<>();
         try (Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null)) {
             if (c.moveToFirst()) {
                 while (!c.isAfterLast()) {

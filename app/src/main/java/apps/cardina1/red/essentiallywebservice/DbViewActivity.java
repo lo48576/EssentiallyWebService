@@ -175,7 +175,7 @@ public class DbViewActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_select) {
             fragmentManager.beginTransaction()
-                .replace(R.id.content_db_view, SelectFragment.newInstance("foo", "bar"))
+                .replace(R.id.content_db_view, SelectFragment.newInstance(db.getTableNames()))
                 .commit();
         } else if (id == R.id.nav_insert) {
 
