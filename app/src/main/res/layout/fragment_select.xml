@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/button_run"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Run" />
+
+        <TextView
+            android:id="@+id/text_fixed_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="SELECT" />
+
+        <EditText
+            android:id="@+id/edit_text_select"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="*"
+            android:inputType="textPersonName" />
+
+        <TextView
+            android:id="@+id/text_fixed_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FROM" />
+
+        <TableLayout
+            android:id="@+id/table_from"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+        </TableLayout>
+
+        <TextView
+            android:id="@+id/text_fixed_where"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="WHERE" />
+
+        <EditText
+            android:id="@+id/edit_text_where"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+</ScrollView>

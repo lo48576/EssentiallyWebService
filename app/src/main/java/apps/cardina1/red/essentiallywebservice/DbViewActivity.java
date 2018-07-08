@@ -9,6 +9,7 @@ import android.provider.OpenableColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,7 +34,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class DbViewActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+    implements NavigationView.OnNavigationItemSelectedListener,
+               OnFragmentInteractionListener
+{
     private final static String ACTIVITY_TAG = "DbViewActivity";
     public final static String DB_URI_EXTRA = "db_uri";
 
@@ -158,6 +161,9 @@ public class DbViewActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
+        // See <https://qiita.com/Hoshi_7/items/bee2588397348a4e0105>.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         int id = item.getItemId();
 
         if (tableItems.contains(item)) {
@@ -168,7 +174,9 @@ public class DbViewActivity extends AppCompatActivity
         } else if (id == R.id.nav_raw_query) {
 
         } else if (id == R.id.nav_select) {
-
+            fragmentManager.beginTransaction()
+                .replace(R.id.content_db_view, SelectFragment.newInstance("foo", "bar"))
+                .commit();
         } else if (id == R.id.nav_insert) {
 
         } else if (id == R.id.nav_update) {
@@ -186,6 +194,11 @@ public class DbViewActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(String tag, Object data) {
+        Log.d(ACTIVITY_TAG, "onListFragmentInteraction: tag = " + tag);
     }
 
     private Optional<File> loadToAppLocalFile(Uri uri, String name) {
