@@ -165,13 +165,21 @@ public class DbViewActivity extends AppCompatActivity
             Log.d(ACTIVITY_TAG, "onNavigationItemSelected: table item selected: " + tableName);
             // FIXME: unimplemented.
             Log.d(ACTIVITY_TAG, "onNavigationItemSelected: FIXME: unimplemented");
+        } else if (id == R.id.nav_raw_query) {
+
+        } else if (id == R.id.nav_select) {
+
+        } else if (id == R.id.nav_insert) {
+
+        } else if (id == R.id.nav_update) {
+
+        } else if (id == R.id.nav_delete) {
+
         } else if (id == R.id.nav_create) {
 
         } else if (id == R.id.nav_drop) {
 
         } else if (id == R.id.nav_alter) {
-
-        } else if (id == R.id.nav_raw_query) {
 
         }
 
