@@ -39,6 +39,7 @@ public class DbViewActivity extends AppCompatActivity
 {
     private final static String ACTIVITY_TAG = "DbViewActivity";
     public final static String DB_URI_EXTRA = "db_uri";
+    public final static String FRAG_INTR_QUERY_WITH_TABLE_RESULT = "query_with_result";
 
     private File file;
     private Database db;
@@ -199,6 +200,52 @@ public class DbViewActivity extends AppCompatActivity
     @Override
     public void onFragmentInteraction(String tag, Object data) {
         Log.d(ACTIVITY_TAG, "onListFragmentInteraction: tag = " + tag);
+        if (tag.equals(FRAG_INTR_QUERY_WITH_TABLE_RESULT)) {
+            Optional<String> query = (Optional<String>) data;
+            if (query.isPresent()) {
+                Cursor cursor = db.rawQuery(query.get());
+                cursor.moveToFirst();
+                // For each row.
+                while (!cursor.isAfterLast()) {
+                    // For each column.
+                    int columnCount = cursor.getColumnCount();
+                    for (int col_i = 0; col_i < columnCount; col_i++) {
+                        String colString = "";
+                        boolean colIsStringRepresentable = false;
+                        switch (cursor.getType(col_i)) {
+                            case Cursor.FIELD_TYPE_BLOB:
+                                colString = "(blob (" + cursor.getBlob(col_i).length + " bytes))";
+                                break;
+                            case Cursor.FIELD_TYPE_FLOAT:
+                                colString = String.valueOf(cursor.getDouble(col_i));
+                                colIsStringRepresentable = true;
+                                break;
+                            case Cursor.FIELD_TYPE_INTEGER:
+                                colString = String.valueOf(cursor.getInt(col_i));
+                                colIsStringRepresentable = true;
+                                break;
+                            case Cursor.FIELD_TYPE_NULL:
+                                colString = "(null)";
+                                break;
+                            case Cursor.FIELD_TYPE_STRING:
+                                colString = cursor.getString(col_i).toString();
+                                colIsStringRepresentable = true;
+                                break;
+                        }
+                        Log.d(ACTIVITY_TAG,
+                                "onFragmentInteraction(FRAG_INTR_QUERY_WITH_TABLE_RESULT): " +
+                                "[string representable: " +
+                                colIsStringRepresentable +
+                                "] " +
+                                cursor.getColumnName(col_i) +
+                                " = " +
+                                colString);
+                    }
+                    cursor.moveToNext();
+                }
+                cursor.close();
+            }
+        }
     }
 
     private Optional<File> loadToAppLocalFile(Uri uri, String name) {

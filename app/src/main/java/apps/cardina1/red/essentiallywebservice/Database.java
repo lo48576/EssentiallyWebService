@@ -54,4 +54,8 @@ public class Database {
 
         return tables;
     }
+
+    public Cursor rawQuery(String sql) {
+        return db.rawQuery(sql, null, null);
+    }
 }
