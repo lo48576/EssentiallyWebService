@@ -330,20 +330,11 @@ public class DbViewActivity extends AppCompatActivity
             for (int col_i = 0; col_i < columnCount; col_i++) {
                 ResultTableCell cell = new ResultTableCell(cursor, col_i);
                 row.add(cell);
-                Log.d(ACTIVITY_TAG,
-                        "onFragmentInteraction(FRAG_INTR_QUERY_WITH_TABLE_RESULT): " +
-                        "[exact serialization: " +
-                        cell.isExactSerialization() +
-                        "] " +
-                        cursor.getColumnName(col_i) +
-                        " = " +
-                        cell.getDisplayValue());
             }
             cursor.moveToNext();
             table.addRow(row);
         }
         cursor.close();
-        // FIXME: Invoke new activity to show result.
         Intent intent = new Intent(this, ResultTableActivity.class);
         intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
         intent.putExtra(ResultTableActivity.RESULT_TABLE_EXTRA, table);
