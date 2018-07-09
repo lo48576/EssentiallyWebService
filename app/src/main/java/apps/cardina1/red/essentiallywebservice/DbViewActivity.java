@@ -1,5 +1,6 @@
 package apps.cardina1.red.essentiallywebservice;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -9,6 +10,7 @@ import android.provider.OpenableColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,14 +30,19 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class DbViewActivity extends AppCompatActivity
-    implements NavigationView.OnNavigationItemSelectedListener {
+    implements NavigationView.OnNavigationItemSelectedListener,
+               OnFragmentInteractionListener
+{
     private final static String ACTIVITY_TAG = "DbViewActivity";
     public final static String DB_URI_EXTRA = "db_uri";
+    public final static String FRAG_INTR_QUERY_WITH_TABLE_RESULT = "query_with_result";
 
     private File file;
     private Database db;
@@ -158,6 +165,9 @@ public class DbViewActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
 
+        // See <https://qiita.com/Hoshi_7/items/bee2588397348a4e0105>.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
         int id = item.getItemId();
 
         if (tableItems.contains(item)) {
@@ -168,7 +178,9 @@ public class DbViewActivity extends AppCompatActivity
         } else if (id == R.id.nav_raw_query) {
 
         } else if (id == R.id.nav_select) {
-
+            fragmentManager.beginTransaction()
+                .replace(R.id.content_db_view, SelectFragment.newInstance(db.getTableNames()))
+                .commit();
         } else if (id == R.id.nav_insert) {
 
         } else if (id == R.id.nav_update) {
@@ -186,6 +198,17 @@ public class DbViewActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onFragmentInteraction(String tag, Object data) {
+        Log.d(ACTIVITY_TAG, "onListFragmentInteraction: tag = " + tag);
+        if (tag.equals(FRAG_INTR_QUERY_WITH_TABLE_RESULT)) {
+            Optional<String> query = (Optional<String>) data;
+            if (query.isPresent()) {
+                showQueryResultTable(query.get());
+            }
+        }
     }
 
     private Optional<File> loadToAppLocalFile(Uri uri, String name) {
@@ -261,5 +284,61 @@ public class DbViewActivity extends AppCompatActivity
             item.setIcon(R.drawable.baseline_view_module_24);
             tableItems.add(item);
         }
+    }
+
+    private void showQueryResultTable(String query) {
+        Log.d(ACTIVITY_TAG, "showQueryResultTable");
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(query);
+        } catch (SQLiteException e) {
+            Intent intent = new Intent(this, ResultTableActivity.class);
+            intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
+            intent.putExtra(ResultTableActivity.STATUS_EXTRA, false);
+            String errorMsg;
+            // Store stack trace into `String` type variable.
+            // See <https://qiita.com/sifue/items/07388fdada096734fa7f>.
+            {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                pw.flush();
+                errorMsg = sw.toString();
+            }
+            intent.putExtra(ResultTableActivity.ERROR_MSG_EXTRA, errorMsg);
+            startActivity(intent);
+            return;
+        }
+        cursor.moveToFirst();
+        ResultTable table = new ResultTable();
+
+        // Get column names.
+        if (!cursor.isAfterLast()) {
+            ArrayList<String> names = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                names.add(cursor.getColumnName(col_i));
+            }
+            table.setColumnNames(names);
+        }
+
+        // For each row.
+        while (!cursor.isAfterLast()) {
+            // For each column.
+            ArrayList<ResultTableCell> row = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                ResultTableCell cell = new ResultTableCell(cursor, col_i);
+                row.add(cell);
+            }
+            cursor.moveToNext();
+            table.addRow(row);
+        }
+        cursor.close();
+        Intent intent = new Intent(this, ResultTableActivity.class);
+        intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
+        intent.putExtra(ResultTableActivity.RESULT_TABLE_EXTRA, table);
+        intent.putExtra(ResultTableActivity.STATUS_EXTRA, true);
+        startActivity(intent);
     }
 }

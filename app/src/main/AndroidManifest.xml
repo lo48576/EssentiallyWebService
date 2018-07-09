@@ -19,7 +19,8 @@
         <activity
             android:name=".DbViewActivity"
             android:label="@string/title_activity_db_view"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ResultTableActivity"></activity>
     </application>
 
 </manifest>
