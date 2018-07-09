@@ -173,8 +173,9 @@ public class DbViewActivity extends AppCompatActivity
         if (tableItems.contains(item)) {
             String tableName = item.getTitle().toString();
             Log.d(ACTIVITY_TAG, "onNavigationItemSelected: table item selected: " + tableName);
-            // FIXME: unimplemented.
-            Log.d(ACTIVITY_TAG, "onNavigationItemSelected: FIXME: unimplemented");
+            fragmentManager.beginTransaction()
+                .replace(R.id.content_db_view, TableInfoFragment.newInstance(tableName))
+                .commit();
         } else if (id == R.id.nav_raw_query) {
 
         } else if (id == R.id.nav_select) {
