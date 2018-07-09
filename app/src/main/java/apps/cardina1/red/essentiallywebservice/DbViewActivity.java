@@ -262,16 +262,13 @@ public class DbViewActivity extends AppCompatActivity
     }
 
     private Optional<String> getDisplayName() {
-        Cursor cursor = getContentResolver()
-                .query(getDbUri(), new String[]{ OpenableColumns.DISPLAY_NAME }, null, null, null, null);
         Optional<String> displayName = Optional.empty();
-        try {
+        try (Cursor cursor = getContentResolver()
+                .query(getDbUri(), new String[]{ OpenableColumns.DISPLAY_NAME }, null, null, null, null)) {
             if (cursor != null && cursor.moveToFirst()) {
                 displayName = Optional.of(cursor.getString(
                         cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
             }
-        } finally {
-            cursor.close();
         }
         return displayName;
     }
