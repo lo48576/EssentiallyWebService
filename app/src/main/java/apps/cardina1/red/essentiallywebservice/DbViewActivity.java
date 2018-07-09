@@ -1,5 +1,6 @@
 package apps.cardina1.red.essentiallywebservice;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -291,6 +292,7 @@ public class DbViewActivity extends AppCompatActivity
         // Get column names.
         if (!cursor.isAfterLast()) {
             ArrayList<String> names = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
             for (int col_i = 0; col_i < columnCount; col_i++) {
                 names.add(cursor.getColumnName(col_i));
             }
@@ -319,5 +321,10 @@ public class DbViewActivity extends AppCompatActivity
         }
         cursor.close();
         // FIXME: Invoke new activity to show result.
+        Intent intent = new Intent(this, ResultTableActivity.class);
+        intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
+        intent.putExtra(ResultTableActivity.RESULT_TABLE_EXTRA, table);
+        intent.putExtra(ResultTableActivity.STATUS_EXTRA, true);
+        startActivity(intent);
     }
 }
