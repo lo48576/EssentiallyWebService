@@ -1,6 +1,7 @@
 package apps.cardina1.red.essentiallywebservice;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -62,6 +63,20 @@ public class ResultTableActivity extends AppCompatActivity {
                         // color: 0xAARRGGBB.
                         // See <https://developer.android.com/reference/android/widget/TextView.html#setTextColor(int)>.
                         columnView.setTextColor(0xFFFF7777);
+                    }
+                    switch (cell.getValueType()) {
+                        case Cursor.FIELD_TYPE_BLOB:
+                            columnView.setBackgroundColor(0xFFDDDDDD);
+                            break;
+                        case Cursor.FIELD_TYPE_NULL:
+                            columnView.setBackgroundColor(0xFFDDDDDD);
+                            break;
+                        case Cursor.FIELD_TYPE_FLOAT:
+                            columnView.setBackgroundColor(0xFFDDDDFF);
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:
+                            columnView.setBackgroundColor(0xFFDDDDFF);
+                            break;
                     }
                 }
                 tableView.addView(rowView);
