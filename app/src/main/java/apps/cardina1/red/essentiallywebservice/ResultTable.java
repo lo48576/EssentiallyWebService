@@ -21,6 +21,34 @@ public class ResultTable implements Serializable {
         columnNames = new ArrayList<>();
     }
 
+    public ResultTable(Cursor cursor) {
+        this();
+
+        cursor.moveToFirst();
+        // Get column names.
+        if (!cursor.isAfterLast()) {
+            ArrayList<String> names = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                names.add(cursor.getColumnName(col_i));
+            }
+            setColumnNames(names);
+        }
+
+        // For each row.
+        while (!cursor.isAfterLast()) {
+            // For each column.
+            ArrayList<ResultTableCell> row = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                ResultTableCell cell = new ResultTableCell(cursor, col_i);
+                row.add(cell);
+            }
+            cursor.moveToNext();
+            addRow(row);
+        }
+    }
+
     public void setColumnNames(ArrayList<String> names) {
         columnNames = names;
     }

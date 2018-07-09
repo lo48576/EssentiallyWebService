@@ -289,9 +289,9 @@ public class DbViewActivity extends AppCompatActivity
 
     private void showQueryResultTable(String query) {
         Log.d(ACTIVITY_TAG, "showQueryResultTable");
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery(query);
+        ResultTable table = null;
+        try (Cursor cursor = db.rawQuery(query)) {
+            table = new ResultTable(cursor);
         } catch (SQLiteException e) {
             Intent intent = new Intent(this, ResultTableActivity.class);
             intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
@@ -310,32 +310,6 @@ public class DbViewActivity extends AppCompatActivity
             startActivity(intent);
             return;
         }
-        cursor.moveToFirst();
-        ResultTable table = new ResultTable();
-
-        // Get column names.
-        if (!cursor.isAfterLast()) {
-            ArrayList<String> names = new ArrayList<>();
-            int columnCount = cursor.getColumnCount();
-            for (int col_i = 0; col_i < columnCount; col_i++) {
-                names.add(cursor.getColumnName(col_i));
-            }
-            table.setColumnNames(names);
-        }
-
-        // For each row.
-        while (!cursor.isAfterLast()) {
-            // For each column.
-            ArrayList<ResultTableCell> row = new ArrayList<>();
-            int columnCount = cursor.getColumnCount();
-            for (int col_i = 0; col_i < columnCount; col_i++) {
-                ResultTableCell cell = new ResultTableCell(cursor, col_i);
-                row.add(cell);
-            }
-            cursor.moveToNext();
-            table.addRow(row);
-        }
-        cursor.close();
         Intent intent = new Intent(this, ResultTableActivity.class);
         intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
         intent.putExtra(ResultTableActivity.RESULT_TABLE_EXTRA, table);
