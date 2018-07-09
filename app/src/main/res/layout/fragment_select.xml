@@ -23,6 +23,21 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/text_fixed_with_recursive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="WITH RECURSIVE" />
+
+            <EditText
+                android:id="@+id/edit_text_with_recursive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textMultiLine" />
+
+            <TextView
                 android:id="@+id/text_fixed_select"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -44,6 +59,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="FROM" />
+
+            <EditText
+                android:id="@+id/edit_text_raw_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName" />
 
             <TableLayout
                 android:id="@+id/table_from"

@@ -149,8 +149,18 @@ public class SelectFragment extends Fragment {
     private Optional<String> buildSqlQuery() {
         View view = getView();
         Log.d(FRAGMENT_TAG, "buildSqlQuery");
-        String query = "SELECT\n";
+        String query = "";
         {
+            String withRecursive = ((EditText) view.findViewById(R.id.edit_text_with_recursive))
+                .getText().toString();
+            if (!withRecursive.isEmpty()) {
+                query += "WITH RECURSIVE\n";
+                query += withRecursive;
+                query += "\n";
+            }
+        }
+        {
+            query += "SELECT\n";
             String select = ((EditText) view.findViewById(R.id.edit_text_select)).getText().toString();
             if (select.isEmpty()) {
                 query += "*";
@@ -178,7 +188,14 @@ public class SelectFragment extends Fragment {
                     sep = ", ";
                 }
             }
-            if (numEnabled == 0) {
+            String rawFrom = ((EditText) view.findViewById(R.id.edit_text_raw_from))
+                .getText().toString();
+            if (!rawFrom.isEmpty()) {
+                query += "\n";
+                query += rawFrom;
+                query += "\n";
+            }
+            if (numEnabled == 0 && rawFrom.isEmpty()) {
                 Toast.makeText(getActivity(),
                         "Select one or more tables", Toast.LENGTH_LONG).show();
                 return Optional.empty();
