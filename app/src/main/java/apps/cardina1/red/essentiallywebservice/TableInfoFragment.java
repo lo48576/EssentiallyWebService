@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 
 
 /**
@@ -20,9 +21,11 @@ import android.view.ViewGroup;
  */
 public class TableInfoFragment extends Fragment {
     private static final String FRAGMENT_TAG = "SelectFragment";
-    private static final String ARG_TABLE_NAME = "tableName";
+    private static final String ARG_TABLE_NAME = "table_name";
+    private static final String ARG_TABLE = "table";
 
     private static String tableName = "";
+    private static ResultTable table = null;
 
     private OnFragmentInteractionListener mListener;
 
@@ -37,11 +40,12 @@ public class TableInfoFragment extends Fragment {
      * @return A new instance of fragment TableInfoFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TableInfoFragment newInstance(String tableName) {
+    public static TableInfoFragment newInstance(String tableName, ResultTable table) {
         Log.d(FRAGMENT_TAG, "newInstance: tableName = " + tableName);
         TableInfoFragment fragment = new TableInfoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TABLE_NAME, tableName);
+        args.putSerializable(ARG_TABLE, table);
         fragment.setArguments(args);
         return fragment;
     }
@@ -51,6 +55,7 @@ public class TableInfoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             tableName = getArguments().getString(ARG_TABLE_NAME);
+            table = (ResultTable) getArguments().getSerializable(ARG_TABLE);
         }
     }
 
@@ -58,7 +63,12 @@ public class TableInfoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_table_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_table_info, container, false);
+
+        TableLayout tableView = view.findViewById(R.id.table_table_info);
+        table.setupTableView(tableView, getActivity());
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -172,9 +172,16 @@ public class DbViewActivity extends AppCompatActivity
 
         if (tableItems.contains(item)) {
             String tableName = item.getTitle().toString();
+            String query = "PRAGMA table_info(" + tableName + ")";
+            ResultTable table = null;
             Log.d(ACTIVITY_TAG, "onNavigationItemSelected: table item selected: " + tableName);
+            try (Cursor cursor = db.rawQuery(query)) {
+                table = new ResultTable(cursor);
+            } catch (SQLiteException e) {
+                e.printStackTrace();
+            }
             fragmentManager.beginTransaction()
-                .replace(R.id.content_db_view, TableInfoFragment.newInstance(tableName))
+                .replace(R.id.content_db_view, TableInfoFragment.newInstance(tableName, table))
                 .commit();
         } else if (id == R.id.nav_raw_query) {
 
