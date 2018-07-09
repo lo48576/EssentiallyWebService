@@ -35,51 +35,8 @@ public class ResultTableActivity extends AppCompatActivity {
         String statusString = status ? "Success" : "Failed";
         ((TextView) findViewById(R.id.text_status)).setText(statusString);
         if (status) {
-            LayoutInflater inflater = LayoutInflater.from(this);
             TableLayout tableView = (TableLayout) findViewById(R.id.table_result_table);
-
-            if (table != null) {
-                // Add headers.
-                if (!table.columnNames.isEmpty()) {
-                    TableRow rowView = new TableRow(this);
-                    for (String name: table.columnNames) {
-                        inflater.inflate(R.layout.result_table_header_cell, rowView);
-                        TextView columnView = (TextView) rowView.getChildAt(rowView.getChildCount() - 1);
-                        columnView.setText(name);
-                    }
-                    tableView.addView(rowView);
-                }
-
-                // Add cells.
-                for (ArrayList<ResultTableCell> row: table.rows) {
-                    TableRow rowView = new TableRow(this);
-                    for (ResultTableCell cell: row) {
-                        inflater.inflate(R.layout.result_table_cell, rowView);
-                        TextView columnView = (TextView) rowView.getChildAt(rowView.getChildCount() - 1);
-                        columnView.setText(cell.getDisplayValue());
-                        if (!cell.isExactSerialization()) {
-                            // color: 0xAARRGGBB.
-                            // See <https://developer.android.com/reference/android/widget/TextView.html#setTextColor(int)>.
-                            columnView.setTextColor(0xFFFF7777);
-                        }
-                        switch (cell.getValueType()) {
-                            case Cursor.FIELD_TYPE_BLOB:
-                                columnView.setBackgroundColor(0xFFDDDDDD);
-                                break;
-                            case Cursor.FIELD_TYPE_NULL:
-                                columnView.setBackgroundColor(0xFFDDDDDD);
-                                break;
-                            case Cursor.FIELD_TYPE_FLOAT:
-                                columnView.setBackgroundColor(0xFFDDDDFF);
-                                break;
-                            case Cursor.FIELD_TYPE_INTEGER:
-                                columnView.setBackgroundColor(0xFFDDDDFF);
-                                break;
-                        }
-                    }
-                    tableView.addView(rowView);
-                }
-            }
+            table.setupTableView(tableView, this);
         } else {
             ((TextView) findViewById(R.id.text_status)).setTextColor(0xFFFF0000);
 
