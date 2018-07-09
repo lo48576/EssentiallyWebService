@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -285,7 +287,28 @@ public class DbViewActivity extends AppCompatActivity
     }
 
     private void showQueryResultTable(String query) {
-        Cursor cursor = db.rawQuery(query);
+        Log.d(ACTIVITY_TAG, "showQueryResultTable");
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery(query);
+        } catch (SQLiteException e) {
+            Intent intent = new Intent(this, ResultTableActivity.class);
+            intent.putExtra(ResultTableActivity.QUERY_EXTRA, query);
+            intent.putExtra(ResultTableActivity.STATUS_EXTRA, false);
+            String errorMsg;
+            // Store stack trace into `String` type variable.
+            // See <https://qiita.com/sifue/items/07388fdada096734fa7f>.
+            {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                pw.flush();
+                errorMsg = sw.toString();
+            }
+            intent.putExtra(ResultTableActivity.ERROR_MSG_EXTRA, errorMsg);
+            startActivity(intent);
+            return;
+        }
         cursor.moveToFirst();
         ResultTable table = new ResultTable();
 

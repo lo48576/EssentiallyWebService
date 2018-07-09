@@ -52,6 +52,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="12dp" />
 
+            <TextView
+                android:id="@+id/text_error_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:textColor="#FFFF0000"
+                android:visibility="gone" />
+
             <TableLayout
                 android:id="@+id/table_result_table"
                 android:layout_width="match_parent"
