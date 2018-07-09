@@ -203,47 +203,7 @@ public class DbViewActivity extends AppCompatActivity
         if (tag.equals(FRAG_INTR_QUERY_WITH_TABLE_RESULT)) {
             Optional<String> query = (Optional<String>) data;
             if (query.isPresent()) {
-                Cursor cursor = db.rawQuery(query.get());
-                cursor.moveToFirst();
-                // For each row.
-                while (!cursor.isAfterLast()) {
-                    // For each column.
-                    int columnCount = cursor.getColumnCount();
-                    for (int col_i = 0; col_i < columnCount; col_i++) {
-                        String colString = "";
-                        boolean colIsStringRepresentable = false;
-                        switch (cursor.getType(col_i)) {
-                            case Cursor.FIELD_TYPE_BLOB:
-                                colString = "(blob (" + cursor.getBlob(col_i).length + " bytes))";
-                                break;
-                            case Cursor.FIELD_TYPE_FLOAT:
-                                colString = String.valueOf(cursor.getDouble(col_i));
-                                colIsStringRepresentable = true;
-                                break;
-                            case Cursor.FIELD_TYPE_INTEGER:
-                                colString = String.valueOf(cursor.getInt(col_i));
-                                colIsStringRepresentable = true;
-                                break;
-                            case Cursor.FIELD_TYPE_NULL:
-                                colString = "(null)";
-                                break;
-                            case Cursor.FIELD_TYPE_STRING:
-                                colString = cursor.getString(col_i).toString();
-                                colIsStringRepresentable = true;
-                                break;
-                        }
-                        Log.d(ACTIVITY_TAG,
-                                "onFragmentInteraction(FRAG_INTR_QUERY_WITH_TABLE_RESULT): " +
-                                "[string representable: " +
-                                colIsStringRepresentable +
-                                "] " +
-                                cursor.getColumnName(col_i) +
-                                " = " +
-                                colString);
-                    }
-                    cursor.moveToNext();
-                }
-                cursor.close();
+                showQueryResultTable(query.get());
             }
         }
     }
@@ -321,5 +281,43 @@ public class DbViewActivity extends AppCompatActivity
             item.setIcon(R.drawable.baseline_view_module_24);
             tableItems.add(item);
         }
+    }
+
+    private void showQueryResultTable(String query) {
+        Cursor cursor = db.rawQuery(query);
+        cursor.moveToFirst();
+        ResultTable table = new ResultTable();
+
+        // Get column names.
+        if (!cursor.isAfterLast()) {
+            ArrayList<String> names = new ArrayList<>();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                names.add(cursor.getColumnName(col_i));
+            }
+            table.setColumnNames(names);
+        }
+
+        // For each row.
+        while (!cursor.isAfterLast()) {
+            // For each column.
+            ArrayList<ResultTableCell> row = new ArrayList<>();
+            int columnCount = cursor.getColumnCount();
+            for (int col_i = 0; col_i < columnCount; col_i++) {
+                ResultTableCell cell = new ResultTableCell(cursor, col_i);
+                row.add(cell);
+                Log.d(ACTIVITY_TAG,
+                        "onFragmentInteraction(FRAG_INTR_QUERY_WITH_TABLE_RESULT): " +
+                        "[exact serialization: " +
+                        cell.isExactSerialization() +
+                        "] " +
+                        cursor.getColumnName(col_i) +
+                        " = " +
+                        cell.getDisplayValue());
+            }
+            cursor.moveToNext();
+            table.addRow(row);
+        }
+        cursor.close();
+        // FIXME: Invoke new activity to show result.
     }
 }
